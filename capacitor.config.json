@@ -1,0 +1,29 @@
+{
+  "appId": "com.nautiyalcybercafe.app",
+  "appName": "Nautiyal Cyber Cafe",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false,
+    "backgroundColor": "#f8fafc",
+    "buildOptions": {
+      "minSdkVersion": 30,
+      "compileSdkVersion": 36,
+      "targetSdkVersion": 36
+    }
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#f8fafc",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
+}

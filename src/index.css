@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* ============================================================
+   ANDROID 11 TO 16 COMPATIBILITY & EDGE-TO-EDGE SYSTEM INSETS
+   Supports API 30 (Android 11) up to API 36 (Android 16)
+   ============================================================ */
+
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  color-scheme: light;
+}
+
+html,
+body {
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Ensure smooth touch responsiveness across Android capacitive screens */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Android 15 & 16 Predictive Back / Form control scroll fix */
+input,
+textarea,
+select {
+  font-size: 16px; /* Prevents auto-zoom on mobile focus */
+}
+
+/* Light-Mode remapping for internal portal cards, tables, and modals */
+.light-portal [class*="bg-slate-900"],
+.light-portal [class*="bg-slate-950"] {
+  background-color: #ffffff !important;
+  color: #0f172a;
+}
+
+.light-portal [class*="bg-slate-800"] {
+  background-color: #f1f5f9 !important;
+  color: #1e293b;
+}
+
+.light-portal [class*="border-slate-800"],
+.light-portal [class*="border-slate-700"] {
+  border-color: #e2e8f0 !important;
+}
+
+.light-portal h1.text-white,
+.light-portal h2.text-white,
+.light-portal h3.text-white,
+.light-portal h4.text-white,
+.light-portal p.text-white,
+.light-portal div.text-white,
+.light-portal span.text-white:not(button *):not([class*="bg-rose-"]):not([class*="bg-emerald-"]):not([class*="bg-blue-"]):not([class*="bg-cyan-"]):not([class*="bg-amber-"]) {
+  color: #0f172a !important;
+}
+
+.light-portal .text-slate-200,
+.light-portal .text-slate-300 {
+  color: #334155 !important;
+}
+
+.light-portal .text-slate-400 {
+  color: #64748b !important;
+}
+
+.light-portal input[class*="bg-slate-"],
+.light-portal select[class*="bg-slate-"],
+.light-portal textarea[class*="bg-slate-"] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}

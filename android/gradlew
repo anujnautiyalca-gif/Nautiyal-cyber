@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Gradle Startup & Bootstrap Script for Nautiyal Cyber Cafe (Android APK & AAB)
+# Supports:
+#   ./gradlew :app:bundleRelease
+#   ./gradlew :app:assembleRelease
+#   ./gradlew :app:assembleDebug
+# ==============================================================================
+
+set -e
+
+APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+WRAPPER_JAR="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
+WRAPPER_PROPS="$APP_HOME/gradle/wrapper/gradle-wrapper.properties"
+GRADLE_VERSION="8.9"
+
+# 1. Verify Java 17+ is installed
+if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+  JAVACMD="$JAVA_HOME/bin/java"
+elif command -v java >/dev/null 2>&1; then
+  JAVACMD="java"
+else
+  echo "================================================================================"
+  echo "ERROR: Java (JDK 17+) is not installed in this environment."
+  echo ""
+  echo "To build the signed Android App Bundle (.aab) or APK (.apk) with:"
+  echo "  ./gradlew :app:bundleRelease"
+  echo ""
+  echo "Run this command in one of the following environments:"
+  echo "  1. Local machine (Windows / macOS / Linux) with JDK 17 and Android SDK installed"
+  echo "  2. Android Studio (Build -> Generate Signed Bundle / APK -> Android App Bundle)"
+  echo "  3. GitHub Actions CI/CD (.github/workflows/build-android-apk.yml included)"
+  echo "================================================================================"
+  exit 1
+fi
+
+# 2. If system gradle is available and wrapper jar isn't downloaded yet, bootstrap or run gradle
+if [ ! -f "$WRAPPER_JAR" ]; then
+  mkdir -p "$APP_HOME/gradle/wrapper"
+  WRAPPER_URL="https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar"
+  if command -v curl >/dev/null 2>&1; then
+    echo "Downloading gradle-wrapper.jar for Gradle $GRADLE_VERSION..."
+    curl -fsSL "$WRAPPER_URL" -o "$WRAPPER_JAR" || true
+  elif command -v wget >/dev/null 2>&1; then
+    echo "Downloading gradle-wrapper.jar for Gradle $GRADLE_VERSION..."
+    wget -q "$WRAPPER_URL" -O "$WRAPPER_JAR" || true
+  fi
+fi
+
+if [ -f "$WRAPPER_JAR" ]; then
+  exec "$JAVACMD" \
+    -Xmx2048m \
+    -Dfile.encoding=UTF-8 \
+    -Dorg.gradle.appname="gradlew" \
+    -classpath "$WRAPPER_JAR" \
+    org.gradle.wrapper.GradleWrapperMain \
+    "$@"
+elif command -v gradle >/dev/null 2>&1; then
+  exec gradle -p "$APP_HOME" "$@"
+else
+  echo "ERROR: Could not locate or download gradle-wrapper.jar and system gradle is not installed."
+  exit 1
+fi

@@ -1,0 +1,125 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Admin role check: checks admins collection or bootstrapped email
+    function isMainAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email != null && request.auth.token.email.lower() == 'anujnautiyal.ca@gmail.com') ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'main_admin' &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true)
+      );
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isMainAdmin() ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true)
+      );
+    }
+
+    // 1. Users collection: customer profile info
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && 
+                       isValidId(userId) && 
+                       incoming().uid == request.auth.uid &&
+                       incoming().role == 'customer';
+      allow update: if (isOwner(userId) && 
+                        incoming().uid == existing().uid && 
+                        !incoming().diff(existing()).affectedKeys().hasAny(['role', 'uid', 'createdAt'])) || 
+                       isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // 2. Admins collection: managed exclusively by Main Admin
+    match /admins/{adminId} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow create, update, delete: if isMainAdmin();
+    }
+
+    // 3. Services collection: catalogue of cyber cafe services
+    match /services/{serviceId} {
+      // Must be logged in to view catalogue
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // 4. Applications collection: customer service requests
+    match /applications/{applicationId} {
+      allow get: if isAdmin() || (isSignedIn() && existing().customerId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && resource.data.customerId == request.auth.uid);
+      allow create: if isSignedIn() && 
+                       isValidId(applicationId) &&
+                       incoming().customerId == request.auth.uid &&
+                       incoming().status == 'Pending' &&
+                       incoming().paymentStatus in ['unpaid', 'pending_verification'];
+      allow update: if isAdmin() || (
+        isSignedIn() && 
+        existing().customerId == request.auth.uid && 
+        incoming().customerId == existing().customerId &&
+        // Customer can only update their payment proof or submitted documents, never the status or completed documents
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'paymentStatus', 'paymentScreenshotUrl', 'paymentUpiRef', 'paymentTimestamp', 
+          'submittedDocuments', 'formData', 'updatedAt'
+        ])
+      );
+      allow delete: if isAdmin();
+
+      // Subcollection: messages on specific application
+      match /messages/{messageId} {
+        allow get, list: if isSignedIn() && (
+          isAdmin() || 
+          get(/databases/$(database)/documents/applications/$(applicationId)).data.customerId == request.auth.uid
+        );
+        allow create: if isSignedIn() && (
+          isAdmin() || 
+          get(/databases/$(database)/documents/applications/$(applicationId)).data.customerId == request.auth.uid
+        ) && incoming().senderId == request.auth.uid;
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // 5. Announcements collection: public announcements for logged in users
+    match /announcements/{announcementId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // 6. Cafe Config: business info, UPI details, QR codes
+    match /cafeConfig/{configId} {
+      allow get, list: if true; // allow reading cafe contact info and UPI payment details
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

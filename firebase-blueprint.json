@@ -1,0 +1,167 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered customer profile and contact information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 120 },
+        "role": { "type": "string", "enum": ["customer", "admin", "main_admin"] },
+        "createdAt": { "type": "string", "maxLength": 40 },
+        "updatedAt": { "type": "string", "maxLength": 40 },
+        "disabled": { "type": "boolean" },
+        "fcmToken": { "type": "string", "maxLength": 256 },
+        "biometricEnabled": { "type": "boolean" },
+        "lastLocation": { "type": "object" }
+      },
+      "required": ["uid", "name", "phone", "email", "role", "createdAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized cyber cafe administrator with RBAC role and permissions",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 120 },
+        "name": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin", "main_admin"] },
+        "active": { "type": "boolean" },
+        "permissions": { "type": "array" },
+        "createdAt": { "type": "string", "maxLength": 40 },
+        "createdBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["uid", "email", "role", "active", "createdAt"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Catalog of digital and cyber cafe services offered by Nautiyal Cyber Cafe",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "requiredDocuments": { "type": "array" },
+        "fee": { "type": "number" },
+        "active": { "type": "boolean" },
+        "instructions": { "type": "string", "maxLength": 2000 },
+        "processingTime": { "type": "string", "maxLength": 80 },
+        "createdAt": { "type": "string", "maxLength": 40 },
+        "updatedAt": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["name", "category", "description", "fee", "active", "createdAt"]
+    },
+    "Application": {
+      "title": "Application",
+      "description": "Service application submitted by a customer",
+      "type": "object",
+      "properties": {
+        "applicationId": { "type": "string", "maxLength": 64 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "customerPhone": { "type": "string", "maxLength": 20 },
+        "customerEmail": { "type": "string", "maxLength": 120 },
+        "serviceId": { "type": "string", "maxLength": 128 },
+        "serviceName": { "type": "string", "maxLength": 150 },
+        "status": { "type": "string", "enum": ["Pending", "Processing", "Documents Required", "Completed", "Rejected"] },
+        "fee": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["unpaid", "pending_verification", "verified", "rejected"] },
+        "paymentScreenshotUrl": { "type": "string", "maxLength": 1000000 },
+        "paymentUpiRef": { "type": "string", "maxLength": 80 },
+        "paymentTimestamp": { "type": "string", "maxLength": 40 },
+        "verifiedByAdminUid": { "type": "string", "maxLength": 128 },
+        "verifiedAt": { "type": "string", "maxLength": 40 },
+        "submittedDocuments": { "type": "array" },
+        "completedDocuments": { "type": "array" },
+        "formData": { "type": "object" },
+        "adminNotes": { "type": "string", "maxLength": 2000 },
+        "createdAt": { "type": "string", "maxLength": 40 },
+        "updatedAt": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["applicationId", "customerId", "customerName", "serviceId", "serviceName", "status", "paymentStatus", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Application query or update between customer and admin",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "senderRole": { "type": "string", "enum": ["customer", "admin", "main_admin"] },
+        "content": { "type": "string", "maxLength": 2000 },
+        "attachments": { "type": "array" },
+        "timestamp": { "type": "string", "maxLength": 40 },
+        "read": { "type": "boolean" }
+      },
+      "required": ["senderId", "senderName", "senderRole", "content", "timestamp"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Official broadcast sent to customers regarding deadlines, new services or cafe updates",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 150 },
+        "content": { "type": "string", "maxLength": 3000 },
+        "category": { "type": "string", "maxLength": 80 },
+        "actionUrl": { "type": "string", "maxLength": 300 },
+        "sentBy": { "type": "string", "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["title", "content", "sentBy", "createdAt"]
+    },
+    "CafeConfig": {
+      "title": "CafeConfig",
+      "description": "Global cafe settings including UPI QR code, business details, and contact",
+      "type": "object",
+      "properties": {
+        "cafeName": { "type": "string", "maxLength": 100 },
+        "tagline": { "type": "string", "maxLength": 150 },
+        "upiId": { "type": "string", "maxLength": 100 },
+        "upiName": { "type": "string", "maxLength": 100 },
+        "upiQrUrl": { "type": "string", "maxLength": 1000000 },
+        "phone": { "type": "string", "maxLength": 20 },
+        "alternatePhone": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 300 },
+        "workingHours": { "type": "string", "maxLength": 100 },
+        "bannerNotice": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string", "maxLength": 40 },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["cafeName", "upiId", "phone"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Customer profiles containing user contact and registration info"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Authorized cyber cafe administrators and roles"
+    },
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/Service" },
+      "description": "Digital and cyber cafe services catalog"
+    },
+    "/applications/{applicationId}": {
+      "schema": { "$ref": "#/entities/Application" },
+      "description": "Customer service applications, document attachments, and payment states"
+    },
+    "/applications/{applicationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Application-specific messaging between customer and admin"
+    },
+    "/announcements/{announcementId}": {
+      "schema": { "$ref": "#/entities/Announcement" },
+      "description": "Broadcast notifications and alerts for users"
+    },
+    "/cafeConfig/{configId}": {
+      "schema": { "$ref": "#/entities/CafeConfig" },
+      "description": "Cafe system configuration, UPI QR code, and contact information"
+    }
+  }
+}

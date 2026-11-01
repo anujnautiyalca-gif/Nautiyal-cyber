@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light Mode Only Theme for Nautiyal Cyber Cafe -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">#F8FAFC</item>
+        <item name="android:windowBackground">#F8FAFC</item>
+    </style>
+
+    <style name="AppTheme.NoActionBarLaunch" parent="AppTheme">
+        <item name="android:windowBackground">#F8FAFC</item>
+    </style>
+</resources>

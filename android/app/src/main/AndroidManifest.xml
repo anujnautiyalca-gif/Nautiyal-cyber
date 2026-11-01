@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Network & Connectivity Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Camera Access for scanning & photographing documents -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- Notifications: Required for Android 13+ (API 33+) & Firebase Cloud Messaging -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Legacy Storage Access for older Android devices (up to API 32) -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+
+    <!-- Biometric & Fingerprint Authentication Permissions (BiometricPrompt & FingerprintManager) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
+
+    <!-- Location Permissions (Fine & Coarse Location for Customer & Shop Verification) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+
+    <!-- Android 13 to 16 Granular Media Photos Access -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:largeHeap="false"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="false"
+        tools:targetApi="35">
+
+        <!-- Default Firebase Cloud Messaging Notification Channel Metadata -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBarLaunch"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep linking for Nautiyal Cyber Cafe services and UPI payment callbacks -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="ais-pre-eycqsk2mxfisrdndakl3o4-196001401311.asia-northeast1.run.app" />
+            </intent-filter>
+        </activity>
+
+        <!-- Firebase Cloud Messaging Service for Real-Time Service Launches & Status Alerts -->
+        <service
+            android:name=".NautiyalMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.messaging.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Secure FileProvider for Private Customer Document Uploads & Downloads -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

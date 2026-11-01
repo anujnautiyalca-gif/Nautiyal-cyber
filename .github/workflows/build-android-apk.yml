@@ -1,0 +1,51 @@
+name: Build Nautiyal Cyber Cafe Android APK & Google Play AAB
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies & Verify Web Portal Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Set up JDK 17 for Android & Jetpack Compose
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build Debug APK, Signed Release APK & Play Store AAB Bundle
+        working-directory: ./android
+        run: |
+          gradle assembleDebug assembleRelease bundleRelease
+
+      - name: Upload Installable Release & Debug APK Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nautiyal-Cyber-Cafe-Android-APKs
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/release/*.apk
+
+      - name: Upload Google Play Console App Bundle (AAB)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nautiyal-Cyber-Cafe-PlayStore-AAB
+          path: android/app/build/outputs/bundle/release/*.aab

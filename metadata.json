@@ -1,0 +1,6 @@
+{
+  "name": "Nautiyal Cyber Cafe",
+  "description": "Comprehensive digital portal for Nautiyal Cyber Cafe - Online government and digital services, applications, secure document uploads and return, UPI payment verification, and real-time announcements.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

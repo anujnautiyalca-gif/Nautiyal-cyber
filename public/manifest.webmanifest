@@ -1,0 +1,92 @@
+{
+  "id": "/",
+  "name": "Nautiyal Cyber Cafe",
+  "short_name": "Nautiyal Cafe",
+  "description": "Nautiyal Cyber Cafe Online Services",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "window-controls-overlay",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Online Services",
+      "short_name": "Services",
+      "description": "Browse and apply for Nautiyal Cyber Cafe online services",
+      "url": "/#services",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "My Applications",
+      "short_name": "Applications",
+      "description": "Track your service applications and status",
+      "url": "/#applications",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "My Documents",
+      "short_name": "Documents",
+      "description": "Download completed official certificates and documents",
+      "url": "/#documents",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
